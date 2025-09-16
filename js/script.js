@@ -3,37 +3,25 @@ async function init() {
 
   const map = document.querySelector('gmp-map');
   const marker = document.querySelector('gmp-advanced-marker');
-  const placePicker = document.querySelector('gmpx-place-picker');
   const infowindow = new google.maps.InfoWindow();
 
-  map.innerMap.setOptions({
-    mapTypeControl: false
-  });
+  // 📍 Coordenadas para la dirección "Av. Chacra Cerro 121, Comas 15316"
+  const coordenadas = { lat: -11.957580, lng: -77.060150 };
+  const titulo = "Av. Chacra Cerro 121, Comas 15316";
 
-  placePicker.addEventListener('gmpx-placechange', () => {
-    const place = placePicker.value;
+  // Establece el centro del mapa en las coordenadas
+  map.center = coordenadas;
+  map.zoom = 17; // Un buen nivel de zoom para ver una calle
 
-    if (!place.location) {
-      window.alert(
-        "No details available for input: '" + place.name + "'"
-      );
-      infowindow.close();
-      marker.position = null;
-      return;
-    }
+  // Establece la posición del marcador
+  marker.position = coordenadas;
+  marker.title = titulo;
 
-    if (place.viewport) {
-      map.innerMap.fitBounds(place.viewport);
-    } else {
-      map.center = place.location;
-      map.zoom = 17;
-    }
-
-    marker.position = place.location;
+  // Muestra una ventana de información al hacer clic en el marcador
+  marker.addEventListener('gmp-click', () => {
     infowindow.setContent(
-      `<strong>${place.displayName}</strong><br>
-       <span>${place.formattedAddress}</span>
-    `);
+      `<strong>${titulo}</strong>`
+    );
     infowindow.open(map.innerMap, marker);
   });
 }
